@@ -492,18 +492,18 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
             <div className="muted">
               {draft.type === 'Snubfighter' && (
                 <span>
-                  Firepower limits: 2d8 max 1 (used {firepowerCounts['2d8']}/1); others must be
+                  Firepower limits: Up to 1 gun @ 2d8 (used {firepowerCounts['2d8']}/1); others must be
                   2d6.
                 </span>
               )}
               {draft.type === 'Gunship' && (
                 <span>
-                  Firepower limits: 2d10 max 1 (used {firepowerCounts['2d10']}/1); others must be
+                  Firepower limits: Up to 1 gun @ 2d10 (used {firepowerCounts['2d10']}/1); others must be
                   2d6 or 2d8.
                 </span>
               )}
               {draft.type === 'Corvette' && (
-                <span>Firepower limits: minimum 2d8 (2d10 allowed with no cap).</span>
+                <span>Firepower limits: Mix of 2d10 and 2d8 with no limits.</span>
               )}
             </div>
 
