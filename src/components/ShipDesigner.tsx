@@ -390,32 +390,46 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
           <p className="muted">No ships saved yet.</p>
         ) : (
           <div className="list">
-            {ships.map((ship) => (
-              <div key={ship.id} className="list-item">
-                <div>
-                  <strong>
-                    {ship.name} - {ship.type} ({ship.points} pts)
-                  </strong>
-                  <div className="muted">
-                    Speed: {ship.speed} Defence: {ship.defense.toUpperCase()} [
-                    {ship.guns.length === 0
-                      ? 'No weapons'
-                      : ship.guns
-                          .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
-                          .join(', ')}
-                    ]
+            {ships.map((ship) => {
+              const upgradesLine = ship.upgrades.length
+                ? ship.upgrades
+                    .slice()
+                    .sort((a, b) => {
+                      const order = { Rare: 0, Uncommon: 1, Common: 2 }
+                      return order[a.rarity] - order[b.rarity]
+                    })
+                    .map((upgrade) => `${upgrade.name} (${upgrade.rarity[0]})`)
+                    .join(', ')
+                : null
+
+              return (
+                <div key={ship.id} className="list-item">
+                  <div>
+                    <strong>
+                      {ship.name} - {ship.type} ({ship.points} pts)
+                    </strong>
+                    <div className="muted">
+                      Speed: {ship.speed} Defence: {ship.defense.toUpperCase()} [
+                      {ship.guns.length === 0
+                        ? 'No weapons'
+                        : ship.guns
+                            .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
+                            .join(', ')}
+                      ]
+                    </div>
+                    {upgradesLine && <div className="muted">Upgrades: {upgradesLine}</div>}
+                  </div>
+                  <div className="actions">
+                    <button className="button ghost" type="button" onClick={() => onEdit(ship)}>
+                      Edit
+                    </button>
+                    <button className="button danger" type="button" onClick={() => onDelete(ship.id)}>
+                      Delete
+                    </button>
                   </div>
                 </div>
-                <div className="actions">
-                  <button className="button ghost" type="button" onClick={() => onEdit(ship)}>
-                    Edit
-                  </button>
-                  <button className="button danger" type="button" onClick={() => onDelete(ship.id)}>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
         {ships.length > 0 && !showForm && (

@@ -377,17 +377,37 @@ export const SquadronBuilder = ({
                     const ship = ships.find((item) => item.id === entry.shipId)
                     const basePoints = ship?.points ?? 0
                     const pilotPoints = calculatePilotPoints(entry.pilotSkill)
+                    const totalPoints = basePoints + pilotPoints
+                    const weaponsLine = ship?.guns.length
+                      ? ship.guns
+                          .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
+                          .join(', ')
+                      : 'No weapons'
+                    const upgradesLine = ship?.upgrades.length
+                      ? ship.upgrades
+                          .slice()
+                          .sort((a, b) => {
+                            const order = { Rare: 0, Uncommon: 1, Common: 2 }
+                            return order[a.rarity] - order[b.rarity]
+                          })
+                          .map((upgrade) => `${upgrade.name} (${upgrade.rarity[0]})`)
+                          .join(', ')
+                      : null
                     const options = ship
                       ? SHIP_RULES[ship.type].allowedPilotSkills
                       : ([] as DiceValue[])
                     return (
                       <div key={entry.id} className="list-item">
                         <div>
-                          <strong>{ship?.name ?? 'Missing ship'}</strong>
+                          <strong>
+                            {ship?.name ?? 'Missing ship'} {ship?.type ?? 'Unknown type'} -
+                            {` ${totalPoints} pts (Ship: ${basePoints}, Pilot: ${pilotPoints})`}
+                          </strong>
                           <div className="muted">
-                            {ship?.type ?? 'Unknown type'} · Points: {basePoints + pilotPoints}
-                            {' '}(Ship: {basePoints}, Pilot {pilotPoints})
+                            Speed: {ship?.speed ?? '-'} Defence:{' '}
+                            {ship?.defense?.toUpperCase() ?? '-'} [{weaponsLine}]
                           </div>
+                          {upgradesLine && <div className="muted">Upgrades: {upgradesLine}</div>}
                         </div>
                         <div className="actions">
                           <select
