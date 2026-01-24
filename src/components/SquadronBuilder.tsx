@@ -316,7 +316,7 @@ export const SquadronBuilder = ({
               <input
                 value={draft.name}
                 onChange={(event) => setDraft({ ...draft, name: event.target.value })}
-                placeholder="Red Flight"
+                placeholder="Red Squadron"
               />
             </label>
 
