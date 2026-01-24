@@ -461,23 +461,24 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
 
             <label className="field">
               <span>Speed</span>
-              <input
-                type="number"
-                min={rules.speedRange[0]}
-                max={rules.speedRange[1]}
+              <select
                 value={draft.speed}
-                onChange={(event) => {
-                  const next = Number(event.target.value) as 1 | 2 | 3
-                  const clamped = Math.min(
-                    Math.max(next, rules.speedRange[0]),
-                    rules.speedRange[1]
-                  ) as 1 | 2 | 3
+                onChange={(event) =>
                   setDraft({
                     ...draft,
-                    speed: clamped,
+                    speed: Number(event.target.value) as 1 | 2 | 3,
                   })
-                }}
-              />
+                }
+              >
+                {Array.from(
+                  { length: rules.speedRange[1] - rules.speedRange[0] + 1 },
+                  (_, index) => rules.speedRange[0] + index
+                ).map((speed) => (
+                  <option key={speed} value={speed}>
+                    {speed}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className="field">
@@ -669,16 +670,12 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
         )}
       </div>
 
-      <div className="note">
-        <strong>Note:</strong> Points tables and upgrade rules are placeholders and can be replaced later.
-      </div>
-
       {showForm && (
         <div className="rules">
           <h4>Quick rules summary</h4>
           <ul>
             <li>Max guns for {draft.type}: {rules.maxGuns}</li>
-            <li>First gun must be forward: {rules.firstGunMustBeForward ? 'Yes' : 'No'}</li>
+            {rules.firstGunMustBeForward && <li>First gun must be forward</li>}
             <li>Rear guns require Tailgunner upgrade.</li>
             <li>Only one forward and one rear gun per ship; remaining guns are turrets.</li>
           </ul>
