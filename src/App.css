@@ -221,6 +221,29 @@
   align-items: center;
 }
 
+.pilot-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .pilot-control {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .pilot-label {
+    display: none;
+  }
+
+  .entry-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .button {
   border: none;
   padding: 8px 14px;

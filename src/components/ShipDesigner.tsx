@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type {
   DiceValue,
   Gun,
@@ -62,6 +62,8 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
   const [errors, setErrors] = useState<string[]>([])
   const [saveFailed, setSaveFailed] = useState(false)
   const [showForm, setShowForm] = useState(ships.length === 0)
+  const formRef = useRef<HTMLDivElement | null>(null)
+  const savedListRef = useRef<HTMLDivElement | null>(null)
 
   const rules = SHIP_RULES[draft.type]
   const tailgunnerEnabled = hasUpgrade(draft.upgrades, TAILGUNNER_KEY)
@@ -342,6 +344,11 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
     onSaveShip(ship)
     resetDraft(ship.type)
     setShowForm(false)
+    if (editingId) {
+      requestAnimationFrame(() => {
+        savedListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
   }
 
   const onEdit = (ship: Ship) => {
@@ -357,6 +364,9 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
     setErrors([])
     setSaveFailed(false)
     setShowForm(true)
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
   const onDelete = (id: string) => {
@@ -384,7 +394,7 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
         </div>
       </header>
 
-      <div className="card">
+      <div className="card" ref={savedListRef}>
         <h3>Saved Ships</h3>
         {ships.length === 0 ? (
           <p className="muted">No ships saved yet.</p>
@@ -441,7 +451,7 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
 
       <div className="panel__grid">
         {showForm && (
-          <div className="card">
+          <div className="card" ref={formRef}>
           <h3>
             {editingId ? `Editing ${editingShip?.name ?? 'Ship'}` : 'New Ship'}
           </h3>

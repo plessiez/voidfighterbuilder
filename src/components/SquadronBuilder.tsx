@@ -39,6 +39,8 @@ export const SquadronBuilder = ({
   const [addNotice, setAddNotice] = useState<string | null>(null)
   const noticeTimeoutRef = useRef<number | null>(null)
   const [printSquadronId, setPrintSquadronId] = useState<string | null>(null)
+  const formRef = useRef<HTMLDivElement | null>(null)
+  const savedListRef = useRef<HTMLDivElement | null>(null)
 
   const selectedShip = useMemo(
     () => ships.find((ship) => ship.id === selection.shipId),
@@ -224,6 +226,11 @@ export const SquadronBuilder = ({
     onSaveSquadron(squadron)
     resetDraft()
     setShowForm(false)
+    if (editingId) {
+      requestAnimationFrame(() => {
+        savedListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
   }
 
   const onEdit = (squadron: Squadron) => {
@@ -239,6 +246,9 @@ export const SquadronBuilder = ({
     setErrors([])
     setAddNotice(null)
     setShowForm(true)
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
 
@@ -263,7 +273,7 @@ export const SquadronBuilder = ({
         </div>
       </header>
 
-      <div className="card">
+      <div className="card" ref={savedListRef}>
         <h3>Saved Squadrons</h3>
         {squadrons.length === 0 ? (
           <p className="muted">No squadrons saved yet.</p>
@@ -309,7 +319,7 @@ export const SquadronBuilder = ({
 
       {showForm && (
         <div className="panel__grid">
-          <div className="card">
+          <div className="card" ref={formRef}>
             <h3>{editingId ? 'Edit Squadron' : 'New Squadron'}</h3>
             <label className="field">
               <span>Name</span>
@@ -409,29 +419,32 @@ export const SquadronBuilder = ({
                           </div>
                           {upgradesLine && <div className="muted">Upgrades: {upgradesLine}</div>}
                         </div>
-                        <div className="actions">
-                          <select
-                            value={entry.pilotSkill}
-                            onChange={(event) =>
-                              setDraft((prev) => ({
-                                ...prev,
-                                entries: prev.entries.map((item) =>
-                                  item.id === entry.id
-                                    ? {
-                                        ...item,
-                                        pilotSkill: event.target.value as DiceValue,
-                                      }
-                                    : item
-                                ),
-                              }))
-                            }
-                          >
-                            {options.map((skill) => (
-                              <option key={skill} value={skill}>
-                                {skill.toUpperCase()}
-                              </option>
-                            ))}
-                          </select>
+                        <div className="actions entry-actions">
+                          <div className="pilot-control">
+                            <span className="muted pilot-label">Piloting</span>
+                            <select
+                              value={entry.pilotSkill}
+                              onChange={(event) =>
+                                setDraft((prev) => ({
+                                  ...prev,
+                                  entries: prev.entries.map((item) =>
+                                    item.id === entry.id
+                                      ? {
+                                          ...item,
+                                          pilotSkill: event.target.value as DiceValue,
+                                        }
+                                      : item
+                                  ),
+                                }))
+                              }
+                            >
+                              {options.map((skill) => (
+                                <option key={skill} value={skill}>
+                                  {skill.toUpperCase()}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                           <button
                             className="button ghost"
                             type="button"
