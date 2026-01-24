@@ -459,6 +459,16 @@ export const SquadronBuilder = ({
         </div>
       )}
 
+      {showForm && (
+        <div className="rules">
+          <h4>Quick rules summary</h4>
+          <ul>
+            <li>Each Rare upgrade can only be used on one ship.</li>
+            <li>Each Uncommon upgrade can only be used on a maximum of three ships.</li>
+          </ul>
+        </div>
+      )}
+
       {printSquadron && (
         <section className="print-only">
           <div className="print-page">
