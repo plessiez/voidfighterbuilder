@@ -349,7 +349,10 @@ export const SquadronBuilder = ({
                     {ships.length === 0 ? (
                       <option value="">No ships available</option>
                     ) : (
-                      ships.map((ship) => (
+                      ships
+                        .slice()
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((ship) => (
                         <option key={ship.id} value={ship.id}>
                           {ship.name} · {ship.type}
                         </option>
@@ -405,9 +408,6 @@ export const SquadronBuilder = ({
                       : false
                     const modifiesDefense = ship
                       ? hasStatModifier(ship.upgrades, 'defense')
-                      : false
-                    const modifiesPiloting = ship
-                      ? hasStatModifier(ship.upgrades, 'piloting')
                       : false
                     const basePoints = ship?.points ?? 0
                     const pilotPoints = calculatePilotPoints(entry.pilotSkill)
@@ -474,7 +474,7 @@ export const SquadronBuilder = ({
                             >
                               {options.map((skill) => (
                                 <option key={skill} value={skill}>
-                                  {formatDiceWithModifier(skill, modifiesPiloting)}
+                                  {skill.toUpperCase()}
                                 </option>
                               ))}
                             </select>
