@@ -2,6 +2,8 @@ export type ShipType = 'Snubfighter' | 'Gunship' | 'Corvette'
 export type DiceValue = '2d6' | '2d8' | '2d10'
 export type GunDirection = 'Forward' | 'Rear' | 'Turret'
 
+export type StatModifier = 'firepower' | 'defense' | 'piloting'
+
 export type Gun = {
   id: string
   direction: GunDirection
@@ -17,6 +19,7 @@ export type Upgrade = {
   rarity: 'Common' | 'Uncommon' | 'Rare'
   rulesText: string
   data?: Record<string, unknown>
+  statModifier?: StatModifier
 }
 
 export type Ship = {

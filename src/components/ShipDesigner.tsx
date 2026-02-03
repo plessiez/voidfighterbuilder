@@ -6,6 +6,7 @@ import type {
   Ship,
   ShipType,
   Upgrade,
+  StatModifier,
 } from '../models/types'
 import { SHIP_RULES } from '../data/rules'
 import { getAllowedUpgrades } from '../data/upgrades'
@@ -43,6 +44,12 @@ const TAILGUNNER_KEY = 'tailgunner'
 
 const hasUpgrade = (upgrades: Upgrade[], key: string) =>
   upgrades.some((upgrade) => upgrade.key === key)
+
+const hasStatModifier = (upgrades: Upgrade[], stat: StatModifier) =>
+  upgrades.some((upgrade) => upgrade.statModifier === stat)
+
+const formatDiceWithModifier = (value: DiceValue, hasModifier: boolean) =>
+  hasModifier ? `${value.toUpperCase()}+1` : value.toUpperCase()
 
 type ShipDesignerProps = {
   ships: Ship[]
@@ -136,7 +143,8 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
     name: string,
     allowedShipTypes: ShipType[],
     rarity: Upgrade['rarity'],
-    rulesText: string
+    rulesText: string,
+    statModifier?: StatModifier
   ) => {
     setDraft((prev) => {
       const existing = prev.upgrades.filter((upgrade) => upgrade.key !== key)
@@ -154,6 +162,7 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
             allowedShipTypes,
             rarity,
             rulesText,
+            statModifier,
           },
         ],
       }
@@ -411,6 +420,20 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
                     .map((upgrade) => `${upgrade.name} (${upgrade.rarity[0]})`)
                     .join(', ')
                 : null
+              const modifiesFirepower = hasStatModifier(ship.upgrades, 'firepower')
+              const modifiesDefense = hasStatModifier(ship.upgrades, 'defense')
+              const weaponsLine =
+                ship.guns.length === 0
+                  ? 'No weapons'
+                  : ship.guns
+                      .map(
+                        (gun) =>
+                          `${gun.direction} ${formatDiceWithModifier(
+                            gun.firepower,
+                            modifiesFirepower
+                          )}`
+                      )
+                      .join(', ')
 
               return (
                 <div key={ship.id} className="list-item">
@@ -419,13 +442,8 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
                       {ship.name} - {ship.type} ({ship.points} pts)
                     </strong>
                     <div className="muted">
-                      Speed: {ship.speed} Defence: {ship.defense.toUpperCase()} [
-                      {ship.guns.length === 0
-                        ? 'No weapons'
-                        : ship.guns
-                            .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
-                            .join(', ')}
-                      ]
+                      Speed: {ship.speed} Defence:{' '}
+                      {formatDiceWithModifier(ship.defense, modifiesDefense)} [{weaponsLine}]
                     </div>
                     {upgradesLine && <div className="muted">Upgrades: {upgradesLine}</div>}
                   </div>
@@ -680,7 +698,8 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
                             upgrade.name,
                             upgrade.allowedShipTypes,
                             upgrade.rarity,
-                            upgrade.rulesText
+                            upgrade.rulesText,
+                            upgrade.statModifier
                           )
                         }
                       />

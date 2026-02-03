@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SHIP_RULES } from '../data/rules'
-import type { DiceValue, Ship, Squadron, SquadronEntry } from '../models/types'
+import type { DiceValue, Ship, Squadron, SquadronEntry, StatModifier, Upgrade } from '../models/types'
 import { calculatePilotPoints, calculateSquadronPoints } from '../utils/points'
 
 type SquadronBuilderProps = {
@@ -19,6 +19,12 @@ const emptyDraft: SquadronDraft = {
   name: '',
   entries: [],
 }
+
+const hasStatModifier = (upgrades: Upgrade[], stat: StatModifier) =>
+  upgrades.some((upgrade) => upgrade.statModifier === stat)
+
+const formatDiceWithModifier = (value: DiceValue, hasModifier: boolean) =>
+  hasModifier ? `${value.toUpperCase()}+1` : value.toUpperCase()
 
 export const SquadronBuilder = ({
   ships,
@@ -383,16 +389,29 @@ export const SquadronBuilder = ({
                 <p className="muted">No ships added yet.</p>
               ) : (
                 <div className="list">
-                  {draft.entries.map((entry) => {
+                  {draft.entries
+                    .slice()
+                    .sort((a, b) => {
+                      const shipA = ships.find((item) => item.id === a.shipId)
+                      const shipB = ships.find((item) => item.id === b.shipId)
+                      const nameA = shipA?.name ?? ''
+                      const nameB = shipB?.name ?? ''
+                      return nameA.localeCompare(nameB)
+                    })
+                    .map((entry) => {
                     const ship = ships.find((item) => item.id === entry.shipId)
+                    const modifiesFirepower = ship
+                      ? hasStatModifier(ship.upgrades, 'firepower')
+                      : false
+                    const modifiesDefense = ship
+                      ? hasStatModifier(ship.upgrades, 'defense')
+                      : false
+                    const modifiesPiloting = ship
+                      ? hasStatModifier(ship.upgrades, 'piloting')
+                      : false
                     const basePoints = ship?.points ?? 0
                     const pilotPoints = calculatePilotPoints(entry.pilotSkill)
                     const totalPoints = basePoints + pilotPoints
-                    const weaponsLine = ship?.guns.length
-                      ? ship.guns
-                          .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
-                          .join(', ')
-                      : 'No weapons'
                     const upgradesLine = ship?.upgrades.length
                       ? ship.upgrades
                           .slice()
@@ -415,7 +434,22 @@ export const SquadronBuilder = ({
                           </strong>
                           <div className="muted">
                             Speed: {ship?.speed ?? '-'} Defence:{' '}
-                            {ship?.defense?.toUpperCase() ?? '-'} [{weaponsLine}]
+                            {ship?.defense
+                              ? formatDiceWithModifier(ship.defense, modifiesDefense)
+                              : '-'}
+                            [
+                            {ship?.guns.length
+                              ? ship.guns
+                                  .map(
+                                    (gun) =>
+                                      `${gun.direction} ${formatDiceWithModifier(
+                                        gun.firepower,
+                                        modifiesFirepower
+                                      )}`
+                                  )
+                                  .join(', ')
+                              : 'No weapons'}
+                            ]
                           </div>
                           {upgradesLine && <div className="muted">Upgrades: {upgradesLine}</div>}
                         </div>
@@ -440,7 +474,7 @@ export const SquadronBuilder = ({
                             >
                               {options.map((skill) => (
                                 <option key={skill} value={skill}>
-                                  {skill.toUpperCase()}
+                                  {formatDiceWithModifier(skill, modifiesPiloting)}
                                 </option>
                               ))}
                             </select>
@@ -460,7 +494,7 @@ export const SquadronBuilder = ({
                         </div>
                       </div>
                     )
-                  })}
+                    })}
                 </div>
               )}
             </div>
@@ -524,8 +558,26 @@ export const SquadronBuilder = ({
                 </tr>
               </thead>
               <tbody>
-                {printSquadron.entries.map((entry) => {
+                {printSquadron.entries
+                  .slice()
+                  .sort((a, b) => {
+                    const shipA = ships.find((item) => item.id === a.shipId)
+                    const shipB = ships.find((item) => item.id === b.shipId)
+                    const nameA = shipA?.name ?? ''
+                    const nameB = shipB?.name ?? ''
+                    return nameA.localeCompare(nameB)
+                  })
+                  .map((entry) => {
                   const ship = ships.find((item) => item.id === entry.shipId)
+                  const modifiesFirepower = ship
+                    ? hasStatModifier(ship.upgrades, 'firepower')
+                    : false
+                  const modifiesDefense = ship
+                    ? hasStatModifier(ship.upgrades, 'defense')
+                    : false
+                  const modifiesPiloting = ship
+                    ? hasStatModifier(ship.upgrades, 'piloting')
+                    : false
                   const pilotPoints = calculatePilotPoints(entry.pilotSkill)
                   const totalPoints = (ship?.points ?? 0) + pilotPoints
                   return (
@@ -536,13 +588,24 @@ export const SquadronBuilder = ({
                       </td>
                       <td>
                         <div>Speed: {ship?.speed ?? '-'}</div>
-                        <div>Defence: {ship?.defense?.toUpperCase() ?? '-'}</div>
+                        <div>
+                          Defence:{' '}
+                          {ship?.defense
+                            ? formatDiceWithModifier(ship.defense, modifiesDefense)
+                            : '-'}
+                        </div>
                       </td>
-                      <td>{entry.pilotSkill.toUpperCase()}</td>
+                      <td>{formatDiceWithModifier(entry.pilotSkill, modifiesPiloting)}</td>
                       <td>
                         {ship?.guns.length
                           ? ship.guns
-                              .map((gun) => `${gun.direction} ${gun.firepower.toUpperCase()}`)
+                              .map(
+                                (gun) =>
+                                  `${gun.direction} ${formatDiceWithModifier(
+                                    gun.firepower,
+                                    modifiesFirepower
+                                  )}`
+                              )
                               .join('\n')
                           : 'None'}
                       </td>

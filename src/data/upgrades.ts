@@ -9,6 +9,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship'],
     rarity: 'Common',
     rulesText: '',
+    statModifier: 'piloting',
   },
   {
     key: 'carrier',
@@ -114,6 +115,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
+    statModifier: 'defense',
   },
   {
     key: 'stealth',
@@ -135,6 +137,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
+    statModifier: 'firepower',
   },
   {
     key: 'torpedoes',
