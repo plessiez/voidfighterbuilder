@@ -21,7 +21,7 @@ export const PILOT_POINTS: Record<DiceValue, number> = {
 }
 
 export const SPEED_POINTS: Record<1 | 2 | 3, number> = {
-  1: 4,
+  1: 1,
   2: 3,
   3: 5,
 }
