@@ -1,6 +1,10 @@
-import type { ShipType, Upgrade } from '../models/types'
+import type { ShipType, StatModifier, Upgrade } from '../models/types'
 
 export type UpgradeDefinition = Omit<Upgrade, 'id'>
+
+const STAT_MODIFIER_PILOTING: StatModifier = 'piloting'
+const STAT_MODIFIER_DEFENSE: StatModifier = 'defense'
+const STAT_MODIFIER_FIREPOWER: StatModifier = 'firepower'
 
 export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
   {
@@ -9,7 +13,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship'],
     rarity: 'Common',
     rulesText: '',
-    statModifier: 'piloting',
+    statModifier: STAT_MODIFIER_PILOTING,
   },
   {
     key: 'carrier',
@@ -87,6 +91,8 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
+    statModifier: STAT_MODIFIER_PILOTING,
+
   },
   {
     key: 'mining-charges',
@@ -115,7 +121,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
-    statModifier: 'defense',
+    statModifier: STAT_MODIFIER_DEFENSE,
   },
   {
     key: 'stealth',
@@ -137,7 +143,7 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
-    statModifier: 'firepower',
+    statModifier: STAT_MODIFIER_FIREPOWER,
   },
   {
     key: 'torpedoes',
