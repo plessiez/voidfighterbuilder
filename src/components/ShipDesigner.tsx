@@ -409,7 +409,10 @@ export const ShipDesigner = ({ ships, onSaveShip, onDeleteShip }: ShipDesignerPr
           <p className="muted">No ships saved yet.</p>
         ) : (
           <div className="list">
-            {ships.map((ship) => {
+            {ships
+              .slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((ship) => {
               const upgradesLine = ship.upgrades.length
                 ? ship.upgrades
                     .slice()

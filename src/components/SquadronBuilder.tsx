@@ -436,7 +436,7 @@ export const SquadronBuilder = ({
                             Speed: {ship?.speed ?? '-'} Defence:{' '}
                             {ship?.defense
                               ? formatDiceWithModifier(ship.defense, modifiesDefense)
-                              : '-'}
+                              : '-'}{' '}
                             [
                             {ship?.guns.length
                               ? ship.guns
