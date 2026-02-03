@@ -91,8 +91,6 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
     allowedShipTypes: ['Snubfighter', 'Gunship', 'Corvette'],
     rarity: 'Common',
     rulesText: '',
-    statModifier: STAT_MODIFIER_PILOTING,
-
   },
   {
     key: 'mining-charges',
