@@ -11,7 +11,7 @@ export const FIREPOWER_POINTS: Record<DiceValue, number> = {
 export const DEFENSE_POINTS: Record<DiceValue, number> = {
   '2d6': 2,
   '2d8': 4,
-  '2d10': 6,
+  '2d10': 8,
 }
 
 export const PILOT_POINTS: Record<DiceValue, number> = {
