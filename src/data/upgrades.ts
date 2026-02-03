@@ -166,5 +166,14 @@ export const UPGRADE_DEFINITIONS: UpgradeDefinition[] = [
   },
 ]
 
+export const UPGRADE_STAT_MODIFIERS = UPGRADE_DEFINITIONS.reduce<
+  Record<string, StatModifier>
+>((acc, upgrade) => {
+  if (upgrade.statModifier) {
+    acc[upgrade.key] = upgrade.statModifier
+  }
+  return acc
+}, {})
+
 export const getAllowedUpgrades = (shipType: ShipType) =>
   UPGRADE_DEFINITIONS.filter((upgrade) => upgrade.allowedShipTypes.includes(shipType))

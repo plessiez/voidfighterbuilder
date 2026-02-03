@@ -9,7 +9,7 @@ import type {
   StatModifier,
 } from '../models/types'
 import { SHIP_RULES } from '../data/rules'
-import { getAllowedUpgrades } from '../data/upgrades'
+import { getAllowedUpgrades, UPGRADE_STAT_MODIFIERS } from '../data/upgrades'
 import { calculateGunPoints, calculateShipPoints } from '../utils/points'
 import type { ShipDraft } from '../utils/points'
 
@@ -46,7 +46,9 @@ const hasUpgrade = (upgrades: Upgrade[], key: string) =>
   upgrades.some((upgrade) => upgrade.key === key)
 
 const hasStatModifier = (upgrades: Upgrade[], stat: StatModifier) =>
-  upgrades.some((upgrade) => upgrade.statModifier === stat)
+  upgrades.some(
+    (upgrade) => (upgrade.statModifier ?? UPGRADE_STAT_MODIFIERS[upgrade.key]) === stat
+  )
 
 const formatDiceWithModifier = (value: DiceValue, hasModifier: boolean) =>
   hasModifier ? `${value.toUpperCase()}+1` : value.toUpperCase()

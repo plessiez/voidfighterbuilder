@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SHIP_RULES } from '../data/rules'
+import { UPGRADE_STAT_MODIFIERS } from '../data/upgrades'
 import type { DiceValue, Ship, Squadron, SquadronEntry, StatModifier, Upgrade } from '../models/types'
 import { calculatePilotPoints, calculateSquadronPoints } from '../utils/points'
 
@@ -21,7 +22,9 @@ const emptyDraft: SquadronDraft = {
 }
 
 const hasStatModifier = (upgrades: Upgrade[], stat: StatModifier) =>
-  upgrades.some((upgrade) => upgrade.statModifier === stat)
+  upgrades.some(
+    (upgrade) => (upgrade.statModifier ?? UPGRADE_STAT_MODIFIERS[upgrade.key]) === stat
+  )
 
 const formatDiceWithModifier = (value: DiceValue, hasModifier: boolean) =>
   hasModifier ? `${value.toUpperCase()}+1` : value.toUpperCase()
